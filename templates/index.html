@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Betel Leaf Disease Detector</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: #0d0d0d;
+        color: #e0ffe0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 50px 20px;
+        min-height: 100vh;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+        color: #00ffcc;
+        text-shadow: 0 0 10px #00ffcc, 0 0 30px #00ffcc;
+        margin-bottom: 30px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      form {
+        background-color: #1a1a1a;
+        padding: 40px 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 25px #00ffc8;
+        max-width: 500px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border: 2px solid #00ffc8;
+        position: relative;
+      }
+
+      .drop-area {
+        border: 2px dashed #00ffcc;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        color: #00ffcc;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .drop-area.dragover {
+        background-color: rgba(0, 255, 204, 0.1);
+      }
+
+      .drop-area p {
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      input[type="submit"] {
+        padding: 14px;
+        border: none;
+        background: #ff00ff;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 12px #ff00ff, 0 0 25px #ff00ff;
+      }
+
+      input[type="submit"]:hover {
+        background: #e600e6;
+        transform: scale(1.03);
+      }
+
+      .result {
+        background: #1a1a1a;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 0 25px #39ff14;
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+        color: #39ff14;
+        font-weight: 600;
+        font-size: 18px;
+        border: 2px solid #39ff14;
+        margin-top: 30px;
+      }
+
+      img {
+        border-radius: 12px;
+        box-shadow: 0 0 25px #39ff14;
+        margin-top: 15px;
+        max-width: 100%;
+        border: 2px solid #39ff14;
+      }
+
+      h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px #39ff14;
+      }
+
+      .loader {
+        display: none;
+        border: 5px solid #00ffcc;
+        border-top: 5px solid transparent;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 10px auto 0;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Betel Leaf Disease Detection Using YOLOv8 🌿</h1>
+
+    <form method="post" enctype="multipart/form-data" id="uploadForm">
+      <div class="drop-area" id="drop-area">
+        <strong>Drag & Drop Image Here</strong>
+        <p>or click to upload</p>
+        <input type="file" name="image" id="fileElem" required />
+      </div>
+
+      <input type="submit" value="Detect Disease" />
+      <div class="loader" id="loader"></div>
+    </form>
+
+    {% if image_path %}
+    <div class="result">
+      <h2>Uploaded Image:</h2>
+      <img src="{{ image_path }}" width="300" />
+    </div>
+    {% endif %} {% if result %}
+    <div class="result">
+      <h2>Detection Result:</h2>
+      <p>{{ result }}</p>
+    </div>
+    {% endif %}
+
+    <script>
+      const dropArea = document.getElementById("drop-area");
+      const fileInput = document.getElementById("fileElem");
+      const form = document.getElementById("uploadForm");
+      const loader = document.getElementById("loader");
+
+      // Drag & Drop handlers
+      dropArea.addEventListener("click", () => fileInput.click());
+      dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.classList.add("dragover");
+      });
+      dropArea.addEventListener("dragleave", () =>
+        dropArea.classList.remove("dragover")
+      );
+      dropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropArea.classList.remove("dragover");
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          fileInput.files = e.dataTransfer.files;
+        }
+      });
+
+      // Show loader on submit
+      form.addEventListener("submit", () => {
+        loader.style.display = "block";
+      });
+    </script>
+  </body>
+</html>
